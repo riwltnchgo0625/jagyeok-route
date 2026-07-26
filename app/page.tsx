@@ -115,7 +115,9 @@ export default function Home() {
     let active = true;
     async function loadSchedules() {
       try {
-        const response = await fetch(`/api/qnet?year=${today.getFullYear()}`);
+        const response = await fetch(
+          `/api/qnet?year=${today.getFullYear()}&revision=2`,
+        );
         const payload = await response.json() as {
           status?: string;
           schedules?: ApiSchedule[];
