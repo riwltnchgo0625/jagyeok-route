@@ -7,7 +7,7 @@ type QnetEnv = {
 
 type QnetRawSchedule = {
   implYy?: string;
-  implSeq?: string;
+  implSeq?: string | number;
   description?: string;
   docRegStartDt?: string;
   docRegEndDt?: string;
@@ -27,20 +27,28 @@ function isoDate(value?: string) {
 }
 
 function rawItems(payload: unknown): QnetRawSchedule[] {
-  const body = (payload as {
+  const root = payload as {
     response?: { body?: { items?: unknown } };
-  })?.response?.body;
+    body?: { items?: unknown };
+  };
+  const body = root?.response?.body ?? root?.body;
   const items = body?.items;
   if (Array.isArray(items)) return items as QnetRawSchedule[];
   if (items && typeof items === "object" && "item" in items) {
     const item = (items as { item?: unknown }).item;
-    return Array.isArray(item) ? (item as QnetRawSchedule[]) : item ? [item as QnetRawSchedule] : [];
+    return Array.isArray(item)
+      ? (item as QnetRawSchedule[])
+      : item
+        ? [item as QnetRawSchedule]
+        : [];
   }
   return [];
 }
 
 async function fetchItemSchedules(serviceKey: string, jmCd: string, year: number) {
-  const url = new URL("https://apis.data.go.kr/B490007/qualExamSchd/getQualExamSchdList");
+  const url = new URL(
+    "https://apis.data.go.kr/B490007/qualExamSchd/getQualExamSchdList",
+  );
   url.searchParams.set("serviceKey", serviceKey);
   url.searchParams.set("numOfRows", "100");
   url.searchParams.set("pageNo", "1");
@@ -156,7 +164,8 @@ export async function GET(request: Request) {
       },
       {
         headers: {
-          "Cache-Control": "public, max-age=300, s-maxage=21600, stale-while-revalidate=86400",
+          "Cache-Control":
+            "public, max-age=300, s-maxage=21600, stale-while-revalidate=86400",
         },
       },
     );
@@ -164,7 +173,10 @@ export async function GET(request: Request) {
     return Response.json(
       {
         status: "upstream_error",
-        message: error instanceof Error ? error.message : "Q-Net 일정 조회에 실패했습니다.",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Q-Net 일정 조회에 실패했습니다.",
         catalog: QNET_CATALOG,
         schedules: [],
       },
