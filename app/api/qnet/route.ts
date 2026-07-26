@@ -50,7 +50,7 @@ async function fetchItemSchedules(serviceKey: string, jmCd: string, year: number
     "https://apis.data.go.kr/B490007/qualExamSchd/getQualExamSchdList",
   );
   url.searchParams.set("serviceKey", serviceKey);
-  url.searchParams.set("numOfRows", "100");
+  url.searchParams.set("numOfRows", "50");
   url.searchParams.set("pageNo", "1");
   url.searchParams.set("dataFormat", "json");
   url.searchParams.set("implYy", String(year));
