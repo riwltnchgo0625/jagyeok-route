@@ -15,11 +15,11 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     metadataBase: base,
-    title: "자격루트 | 자격증 일정 관리",
-    description: "접수 기간부터 시험일까지, 취업 준비에 필요한 자격증 일정을 한곳에서 관리하세요.",
+    title: "자격루트 | Q-Net 자격증 일정 관리",
+    description: "한국산업인력공단 Q-Net 공공데이터로 국가기술자격 접수 기간과 시험일을 관리하세요.",
     openGraph: {
       title: "자격루트",
-      description: "자격증 일정, 놓치지 않게",
+      description: "Q-Net 공식 자격증 일정, 놓치지 않게",
       images: [{ url: new URL("/og.png", base).toString(), width: 1734, height: 907 }],
       locale: "ko_KR",
       type: "website",
@@ -27,7 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       title: "자격루트",
-      description: "자격증 일정, 놓치지 않게",
+      description: "Q-Net 공식 자격증 일정, 놓치지 않게",
       images: [new URL("/og.png", base).toString()],
     },
   };
