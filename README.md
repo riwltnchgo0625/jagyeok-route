@@ -1,98 +1,75 @@
-# vinext-starter
+# 자격루트
 
-A clean full-stack starter running on
-[vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and
-Drizzle support.
+한국산업인력공단 Q-Net 공공데이터를 활용해 국가기술자격 시험 일정을 검색하고, 원하는 일정을 개인 캘린더로 관리할 수 있는 웹앱입니다.
 
-## Prerequisites
+> TOEIC, 한국사능력검정시험, 민간자격처럼 공식 공공 API가 연결되지 않은 시험은 현재 제공하지 않습니다.
 
-- Node.js `>=22.13.0`
+## 서비스 이용하기
 
-## Quick Start
+[자격루트 바로가기](https://jagyeok-route-2026.lllilllilllii.chatgpt.site/)
+
+## 주요 기능
+
+- **홈**: 오늘 날짜, 접수가 곧 시작되는 자격증, 내 캘린더에 등록한 일정 중 가까운 3개를 확인할 수 있습니다.
+- **자격증 일정 검색**: 자격증명 검색과 분야·일정·필기/실기 필터를 제공합니다.
+- **내 캘린더**: 검색 결과에서 추가한 일정을 달력으로 확인할 수 있습니다.
+- **일정 구분**: 원서접수 기간은 파란색, 시험 기간은 초록색으로 표시합니다.
+- **모바일 지원**: 작은 화면에서도 달력 전체가 가로 스크롤 없이 보이도록 구성했습니다.
+- **기기별 저장**: 선택한 일정은 브라우저의 로컬 저장소에 보관됩니다.
+
+## 데이터 출처
+
+- 제공기관: 한국산업인력공단(Q-Net)
+- 공공 API: [국가자격 시험일정 조회 서비스](https://www.data.go.kr/data/15074408/openapi.do)
+- 일정은 공공 API 응답을 기준으로 표시되며, 최종 정보는 [Q-Net](https://www.q-net.or.kr/)에서 다시 확인하는 것을 권장합니다.
+
+## 로컬에서 실행하기
+
+### 준비 사항
+
+- Node.js 22.13.0 이상
+- 공공데이터포털에서 발급받은 서비스 인증키
+
+### 실행 순서
 
 ```bash
 npm install
+```
+
+프로젝트 최상위 폴더에 `.env.local` 파일을 만들고 다음과 같이 인증키를 입력합니다.
+
+```env
+DATA_GO_KR_SERVICE_KEY=발급받은_인증키
+```
+
+개발 서버를 실행합니다.
+
+```bash
 npm run dev
+```
+
+배포용 결과물을 확인하려면 다음 명령을 사용합니다.
+
+```bash
 npm run build
 ```
 
-This starter does not use `wrangler.jsonc`.
+## API 인증키 보안
 
-## Included Shape
+- 실제 인증키가 들어 있는 `.env`, `.env.local` 등의 환경파일은 Git에 포함되지 않습니다.
+- 저장소의 `.env.example`에는 변수 이름만 있으며 실제 값은 없습니다.
+- 인증키를 코드나 공개 저장소에 직접 입력하지 마세요.
+- 배포할 때는 호스팅 서비스의 비밀 환경변수 `DATA_GO_KR_SERVICE_KEY`로 등록해야 합니다.
 
-- edit site code under `app/`
-- `.openai/hosting.json` declares optional Sites D1 and R2 bindings
-- `vite.config.ts` simulates declared bindings for local development
-- `db/schema.ts` starts intentionally empty
-- `examples/d1/` contains an optional D1 example surface
-- `drizzle.config.ts` supports local migration generation when needed
+## 사용 기술
 
-## Workspace Auth Headers
+- React 19
+- Next.js 16
+- TypeScript
+- Vinext / Cloudflare Workers
+- 한국산업인력공단 국가자격 시험일정 Open API
 
-OpenAI workspace sites can read the current user's email from
-`oai-authenticated-user-email`.
+## 참고 사항
 
-SIWC-authenticated workspace sites may also receive
-`oai-authenticated-user-full-name` when the user's SIWC profile has a non-empty
-`name` claim. The full-name value is percent-encoded UTF-8 and is accompanied by
-`oai-authenticated-user-full-name-encoding: percent-encoded-utf-8`.
-
-Treat the full name as optional and fall back to email when it is absent:
-
-```tsx
-import { headers } from "next/headers";
-
-export default async function Home() {
-  const requestHeaders = await headers();
-  const email = requestHeaders.get("oai-authenticated-user-email");
-  const encodedFullName = requestHeaders.get("oai-authenticated-user-full-name");
-  const fullName =
-    encodedFullName &&
-    requestHeaders.get("oai-authenticated-user-full-name-encoding") ===
-      "percent-encoded-utf-8"
-      ? decodeURIComponent(encodedFullName)
-      : null;
-
-  const displayName = fullName ?? email;
-  // ...
-}
-```
-
-## Optional Dispatch-Owned ChatGPT Sign-In
-
-Import the ready-to-use helpers from `app/chatgpt-auth.ts` when the site needs
-optional or required ChatGPT sign-in:
-
-- Use `getChatGPTUser()` for optional signed-in UI.
-- Use `requireChatGPTUser(returnTo)` for server-rendered pages that should send
-  anonymous visitors through Sign in with ChatGPT.
-- Use `chatGPTSignInPath(returnTo)` and `chatGPTSignOutPath(returnTo)` for
-  browser links or actions.
-- Pass a same-origin relative `returnTo` path for the destination after sign-in
-  or sign-out. The helper validates and safely encodes it.
-- Mark protected pages with `export const dynamic = "force-dynamic"` because
-  they depend on per-request identity headers.
-
-Dispatch owns `/signin-with-chatgpt`, `/signout-with-chatgpt`, `/callback`, the
-OAuth cookies, and identity header injection. Do not implement app routes for
-those reserved paths. Routes that do not import and call the helper remain
-anonymous-compatible.
-
-SIWC establishes identity only; it does not prove workspace membership. Use the
-Sites hosting platform's access policy controls for workspace-wide restrictions,
-or enforce explicit server-side membership or allowlist checks.
-
-Use SIWC for account pages, user-specific dashboards, saved records, and write
-actions tied to the current ChatGPT user. Leave public content anonymous.
-
-## Useful Commands
-
-- `npm run dev`: start local development
-- `npm run build`: verify the vinext build output
-- `npm test`: build the starter and verify its rendered loading skeleton
-- `npm run db:generate`: generate Drizzle migrations after schema changes
-
-## Learn More
-
-- [vinext Documentation](https://github.com/cloudflare/vinext)
-- [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
+- 내 캘린더 데이터는 현재 계정 서버가 아닌 각 브라우저에 저장됩니다. 브라우저 데이터를 삭제하거나 다른 기기를 사용하면 등록한 일정이 자동으로 동기화되지 않습니다.
+- 공공 API 정책이나 응답 형식이 변경되면 일정 표시가 일시적으로 제한될 수 있습니다.
