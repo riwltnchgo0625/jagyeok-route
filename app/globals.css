@@ -1577,17 +1577,72 @@ button {
   }
 
   .calendar-panel {
-    overflow-x: auto;
+    overflow: hidden;
   }
 
   .calendar-toolbar,
   .weekday-row,
   .days-grid {
-    min-width: 680px;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .calendar-toolbar {
+    grid-template-columns: 30px minmax(0, 1fr) 30px auto;
+    gap: 5px;
+    padding: 13px 10px;
+  }
+
+  .calendar-toolbar h2 {
+    min-width: 0;
+    font-size: 15px;
+    letter-spacing: -0.5px;
+  }
+
+  .calendar-toolbar button {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    font-size: 18px;
+  }
+
+  .calendar-toolbar .today-button {
+    padding: 0 8px;
+    font-size: 9px;
+  }
+
+  .weekday-row span {
+    min-width: 0;
+    padding: 8px 0;
   }
 
   .calendar-day {
-    min-height: 94px;
+    min-width: 0;
+    min-height: 76px;
+    padding: 5px 2px;
+  }
+
+  .day-number {
+    width: 21px;
+    height: 21px;
+    font-size: 9px;
+  }
+
+  .day-events {
+    gap: 2px;
+    margin-top: 3px;
+  }
+
+  .calendar-event {
+    max-width: 100%;
+    padding: 3px 2px;
+    border-radius: 3px;
+    font-size: 7px;
+    line-height: 1.2;
+  }
+
+  .day-events small {
+    font-size: 7px;
   }
 
   .my-calendar-list {
