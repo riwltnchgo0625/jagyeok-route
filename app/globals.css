@@ -7,6 +7,8 @@
   --blue-soft: #edf3ff;
   --green: #23a36d;
   --green-soft: #eaf8f1;
+  --red: #c74444;
+  --red-soft: #fff0f0;
   --ivory: #f7f5ef;
   --paper: #ffffff;
   --line: #e6e8ec;
@@ -928,6 +930,21 @@ button {
   background: linear-gradient(90deg, rgba(237, 243, 255, 0.72), white 22%);
 }
 
+.certificate-card.closed {
+  border-color: rgba(199, 68, 68, 0.28);
+  background: linear-gradient(90deg, rgba(255, 240, 240, 0.78), white 24%);
+}
+
+.certificate-card.closed:hover {
+  border-color: rgba(199, 68, 68, 0.48);
+  box-shadow: 0 12px 28px rgba(151, 43, 43, 0.09);
+}
+
+.certificate-card.closed.selected {
+  border-color: rgba(199, 68, 68, 0.38);
+  background: linear-gradient(90deg, rgba(255, 237, 237, 0.9), rgba(237, 243, 255, 0.52) 34%, white 60%);
+}
+
 .certificate-letter {
   display: grid;
   width: 47px;
@@ -948,6 +965,12 @@ button {
 .card-tags .open-tag {
   background: var(--green-soft);
   color: var(--green);
+}
+
+.card-tags .closed-tag {
+  border: 1px solid rgba(199, 68, 68, 0.15);
+  background: var(--red-soft);
+  color: var(--red);
 }
 
 .schedule-pair {

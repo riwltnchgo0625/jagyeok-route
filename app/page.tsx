@@ -184,10 +184,12 @@ export default function Home() {
     const matchesPhase = phase === "필기·실기 전체" || item.phase === phase;
     const isOpen = daysBetween(today, item.applyStart) <= 0 && daysBetween(today, item.applyEnd) >= 0;
     const isUpcoming = daysBetween(today, item.applyStart) > 0;
+    const isClosed = daysBetween(today, item.applyEnd) < 0;
     const matchesStatus =
       status === "전체 일정" ||
       (status === "접수 중" && isOpen) ||
-      (status === "접수 예정" && isUpcoming);
+      (status === "접수 예정" && isUpcoming) ||
+      (status === "마감" && isClosed);
     return matchesQuery && matchesCategory && matchesPhase && matchesStatus;
   });
 
@@ -380,6 +382,7 @@ export default function Home() {
                 <option>전체 일정</option>
                 <option>접수 중</option>
                 <option>접수 예정</option>
+                <option>마감</option>
               </select>
               <select value={phase} onChange={(event) => setPhase(event.target.value)} aria-label="시험 단계">
                 <option>필기·실기 전체</option>
@@ -427,13 +430,15 @@ export default function Home() {
                 {filtered.map((item) => {
                   const isSelected = selectedIds.includes(item.id);
                   const isOpen = daysBetween(today, item.applyStart) <= 0 && daysBetween(today, item.applyEnd) >= 0;
+                  const isClosed = daysBetween(today, item.applyEnd) < 0;
                   return (
-                    <article className={`certificate-card ${isSelected ? "selected" : ""}`} key={item.id}>
+                    <article className={`certificate-card ${isSelected ? "selected" : ""} ${isClosed ? "closed" : ""}`} key={item.id}>
                       <div className="certificate-letter">{item.name.slice(0, 1)}</div>
                       <div className="certificate-info">
                         <div className="card-tags">
                           <span>{item.category}</span><span>{item.phase}</span>
                           {isOpen && <span className="open-tag">접수 중</span>}
+                          {isClosed && <span className="closed-tag">마감</span>}
                         </div>
                         <h3>{item.name}</h3>
                         <p>{item.year}년 {item.round}회 · {item.level}</p>
